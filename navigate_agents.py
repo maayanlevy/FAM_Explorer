@@ -102,8 +102,7 @@ def navigate_agents():
                 filtered_agents.extend(company_agents["agents"])
             else:
                 st.warning(f"No agents found in company data for ID: {company_id}")
-        else:
-            st.warning(f"No agents found for sanitized company ID: {sanitized_id}")
+
 
     if filtered_agents:
         display_agents(filtered_agents)
