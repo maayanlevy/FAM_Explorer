@@ -9,7 +9,6 @@ import streamlit.components.v1 as components
 import requests
 import os
 from dotenv import load_dotenv
-from navigate_agents import navigate_agents
 
 # Load environment variables from .env file
 load_dotenv()
@@ -260,16 +259,6 @@ def display_ai_agents(agent_data):
             col2.markdown(card_html, unsafe_allow_html=True)
 
 def main():
-    st.sidebar.title("Navigation")
-    page = st.sidebar.radio("Go to", ["Home", "Navigate Agents"])
-
-    if page == "Home":
-        home()
-    elif page == "Navigate Agents":
-        navigate_agents()
-
-def home():
-    # Your existing code for the home page goes here
     st.set_page_config(page_title="GEB First Addressable Market Explorer", layout="wide")
     
     # Add this line to display the app logo
@@ -304,6 +293,8 @@ def home():
     # Sorting
     sort_column = st.sidebar.selectbox("Sort by", options=selected_columns, index=selected_columns.index('company.metrics.employees'))
     sort_ascending = st.sidebar.checkbox("Sort Ascending", value=False)
+
+
 
     # Apply filtering
     if search_term:
