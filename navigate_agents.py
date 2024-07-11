@@ -17,7 +17,7 @@ def fetch_agents_data():
     data = ref.get()
     return data
 
-ef display_agents(agents):
+def display_agents(agents):
     st.subheader("AI Agents")
     col1, col2 = st.columns(2)
     for i, agent in enumerate(agents):
