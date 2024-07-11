@@ -17,7 +17,7 @@ def fetch_agents_data():
     data = ref.get()
     return data
 
-def display_agents(agents):
+ef display_agents(agents):
     st.subheader("AI Agents")
     col1, col2 = st.columns(2)
     for i, agent in enumerate(agents):
@@ -68,10 +68,12 @@ def navigate_agents():
     filtered_agents = []
 
     for company_id, agents in agents_data.items():
-        if company_ids and company_id not in company_ids:
+        sanitized_id = sanitize_id(company_id)
+        
+        if company_ids and sanitized_id not in company_ids:
             continue
         
-        company_info = df_company[df_company["ID"] == company_id]
+        company_info = df_company[df_company["ID"] == sanitized_id]
         if not company_info.empty:
             industry = company_info["company.category.industry"].values[0]
             company_technologies = company_info["company.tech"].values[0].split(', ') if not pd.isna(company_info["company.tech"].values[0]) else []
