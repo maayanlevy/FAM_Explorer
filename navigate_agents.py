@@ -4,7 +4,6 @@ import json
 from firebase_admin import db
 import os
 
-# Fetch company data from Firebase
 @st.cache_data
 def fetch_company_data():
     ref = db.reference('FinalMergedData')
@@ -12,19 +11,12 @@ def fetch_company_data():
     parsed_data = [json.loads(value) for value in data.values()]
     return pd.DataFrame(parsed_data)
 
-# Fetch agents data from Firebase
 @st.cache_data
 def fetch_agents_data():
     ref = db.reference('Agents')
     data = ref.get()
     return data
 
-# Function to sanitize IDs
-def sanitize_id(company_id):
-    # Replace periods with commas or any other character that Firebase allows
-    return company_id.replace('.', ',')
-
-# Function to display agents
 def display_agents(agents):
     st.subheader("AI Agents")
     col1, col2 = st.columns(2)
@@ -58,7 +50,6 @@ def display_agents(agents):
         else:
             col2.markdown(card_html, unsafe_allow_html=True)
 
-# Main function to navigate agents
 def navigate_agents():
     st.title("Navigate AI Agents")
     
@@ -70,19 +61,17 @@ def navigate_agents():
         return
 
     # Filtering options
-    company_ids = st.multiselect("Select Company IDs", options=df_company["ID"].unique().tolist())
-    industries = st.multiselect("Select Industries", options=df_company["company.category.industry"].unique().tolist())
-    technologies = st.multiselect("Select Technologies", options=df_company["company.tech"].str.split(', ').explode().unique().tolist())
+    company_ids = st.multiselect("Select Company IDs", options=df_company["ID"].unique().tolist(), default=df_company["ID"].unique().tolist())
+    industries = st.multiselect("Select Industries", options=df_company["company.category.industry"].unique().tolist(), default=df_company["company.category.industry"].unique().tolist())
+    technologies = st.multiselect("Select Technologies", options=df_company["company.tech"].str.split(', ').explode().unique().tolist(), default=df_company["company.tech"].str.split(', ').explode().unique().tolist())
 
     filtered_agents = []
 
     for company_id, agents in agents_data.items():
-        sanitized_id = sanitize_id(company_id)
-        
-        if company_ids and sanitized_id not in company_ids:
+        if company_ids and company_id not in company_ids:
             continue
         
-        company_info = df_company[df_company["ID"] == sanitized_id]
+        company_info = df_company[df_company["ID"] == company_id]
         if not company_info.empty:
             industry = company_info["company.category.industry"].values[0]
             company_technologies = company_info["company.tech"].values[0].split(', ') if not pd.isna(company_info["company.tech"].values[0]) else []
