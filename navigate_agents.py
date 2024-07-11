@@ -1,54 +1,10 @@
 import streamlit as st
 import pandas as pd
-import firebase_admin
-from firebase_admin import credentials, db
 import json
+from firebase_admin import db
 import os
-from dotenv import load_dotenv
 
-# Load environment variables from .env file
-load_dotenv()
-
-# Function to get Firebase credentials
-def get_firebase_credentials():
-    if os.getenv("FIREBASE_TYPE"):
-        return {
-            "type": os.getenv("FIREBASE_TYPE"),
-            "project_id": os.getenv("FIREBASE_PROJECT_ID"),
-            "private_key_id": os.getenv("FIREBASE_PRIVATE_KEY_ID"),
-            "private_key": os.getenv("FIREBASE_PRIVATE_KEY").replace('\\n', '\n'),
-            "client_email": os.getenv("FIREBASE_CLIENT_EMAIL"),
-            "client_id": os.getenv("FIREBASE_CLIENT_ID"),
-            "auth_uri": os.getenv("FIREBASE_AUTH_URI"),
-            "token_uri": os.getenv("FIREBASE_TOKEN_URI"),
-            "auth_provider_x509_cert_url": os.getenv("FIREBASE_AUTH_PROVIDER_X509_CERT_URL"),
-            "client_x509_cert_url": os.getenv("FIREBASE_CLIENT_X509_CERT_URL")
-        }
-    else:
-        return {
-            "type": st.secrets["firebase"]["type"],
-            "project_id": st.secrets["firebase"]["project_id"],
-            "private_key_id": st.secrets["firebase"]["private_key_id"],
-            "private_key": st.secrets["firebase"]["private_key"],
-            "client_email": st.secrets["firebase"]["client_email"],
-            "client_id": st.secrets["firebase"]["client_id"],
-            "auth_uri": st.secrets["firebase"]["auth_uri"],
-            "token_uri": st.secrets["firebase"]["token_uri"],
-            "auth_provider_x509_cert_url": st.secrets["firebase"]["auth_provider_x509_cert_url"],
-            "client_x509_cert_url": st.secrets["firebase"]["client_x509_cert_url"]
-        }
-
-# Function to get Firebase database URL
-def get_firebase_database_url():
-    return os.getenv("FIREBASE_DATABASE_URL") or st.secrets["firebase"]["database"]["url"]
-
-# Initialize Firebase if not already initialized
-if not firebase_admin._apps:
-    cred = credentials.Certificate(get_firebase_credentials())
-    firebase_admin.initialize_app(cred, {
-        'databaseURL': get_firebase_database_url()
-    })
-
+# Fetch company data from Firebase
 @st.cache_data
 def fetch_company_data():
     ref = db.reference('FinalMergedData')
@@ -56,17 +12,19 @@ def fetch_company_data():
     parsed_data = [json.loads(value) for value in data.values()]
     return pd.DataFrame(parsed_data)
 
+# Fetch agents data from Firebase
 @st.cache_data
 def fetch_agents_data():
     ref = db.reference('Agents')
     data = ref.get()
     return data
 
+# Function to sanitize IDs
 def sanitize_id(company_id):
     # Replace periods with commas or any other character that Firebase allows
     return company_id.replace('.', ',')
 
-
+# Function to display agents
 def display_agents(agents):
     st.subheader("AI Agents")
     col1, col2 = st.columns(2)
@@ -100,6 +58,7 @@ def display_agents(agents):
         else:
             col2.markdown(card_html, unsafe_allow_html=True)
 
+# Main function to navigate agents
 def navigate_agents():
     st.title("Navigate AI Agents")
     
