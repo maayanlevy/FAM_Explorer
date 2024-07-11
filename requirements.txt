@@ -4,4 +4,3 @@ python-dotenv==1.0.0
 requests==2.28.2
 streamlit==1.36.0
 streamlit-aggrid==1.0.5
-navigate_agents
