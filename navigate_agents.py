@@ -20,40 +20,40 @@ def sanitize_id(company_id):
     # Replace periods with commas or any other character that Firebase allows
     return company_id.replace('.', ',')
 
-def display_agents(agents,company_id):
+def display_agents(agents_by_company):
     st.subheader("AI Agents")
     col1, col2 = st.columns(2)
-    for i, agent in enumerate(agents):
-        title = agent.get("Title", "Unknown Agent")
-        description = agent.get("AgentDescription", "No description available.")
-        used_by = agent.get("UsedBy", [])
-        related_apis = agent.get("RelatedAPIs", [])
-        id = agent.get("ID", [])
-        
-        # Create a card with custom CSS
-        card_html = f"""
-        <div style="
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 16px;
-            margin: 10px 0;
-            background-color: white;
-            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
-            position: relative;
-            overflow: hidden;
-        ">
-            <p style="margin-left: 10px; font-family: Roboto,Arial,sans-serif;"><b>Company ID:</b>{company_id}</p>
-            <h5 style="margin-left: 10px; color: #202124; font-family: 'Google Sans',Roboto,Arial,sans-serif;">{title}</h5>
-            <p style="margin-left: 10px; font-family: Roboto,Arial,sans-serif;">{description}</p>
-            <p style="margin-left: 10px; font-family: Roboto,Arial,sans-serif;"><b>Used By:</b> {', '.join(used_by)}</p>
-            <p style="margin-left: 10px; font-family: Roboto,Arial,sans-serif;"><b>Related APIs:</b> {', '.join(related_apis)}</p>
-        </div>
-        """
-        # Alternate between columns
-        if i % 2 == 0:
-            col1.markdown(card_html, unsafe_allow_html=True)
-        else:
-            col2.markdown(card_html, unsafe_allow_html=True)
+    for company_id, agents in agents_by_company.items():
+        for i, agent in enumerate(agents):
+            title = agent.get("Title", "Unknown Agent")
+            description = agent.get("AgentDescription", "No description available.")
+            used_by = agent.get("UsedBy", [])
+            related_apis = agent.get("RelatedAPIs", [])
+            
+            # Create a card with custom CSS
+            card_html = f"""
+            <div style="
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                padding: 16px;
+                margin: 10px 0;
+                background-color: white;
+                box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+                position: relative;
+                overflow: hidden;
+            ">
+                <h5 style="margin-left: 10px; color: #202124; font-family: 'Google Sans',Roboto,Arial,sans-serif;">{title}</h5>
+                <p style="margin-left: 10px; font-family: Roboto,Arial,sans-serif;">{description}</p>
+                <p style="margin-left: 10px; font-family: Roboto,Arial,sans-serif;"><b>Used By:</b> {', '.join(used_by)}</p>
+                <p style="margin-left: 10px; font-family: Roboto,Arial,sans-serif;"><b>Related APIs:</b> {', '.join(related_apis)}</p>
+                <p style="margin-left: 10px; font-family: Roboto,Arial,sans-serif;"><b>Company ID:</b> {company_id}</p>
+            </div>
+            """
+            # Alternate between columns
+            if i % 2 == 0:
+                col1.markdown(card_html, unsafe_allow_html=True)
+            else:
+                col2.markdown(card_html, unsafe_allow_html=True)
 
 def navigate_agents():
     st.title("Navigate AI Agents")
@@ -91,7 +91,7 @@ def navigate_agents():
     filtered_company_ids = filtered_companies["ID"].unique()
 
     # Collect agents for filtered companies
-    filtered_agents = []
+    filtered_agents_by_company = {}
 
     for company_id in filtered_company_ids:
         sanitized_id = sanitize_id(company_id)
@@ -101,13 +101,14 @@ def navigate_agents():
                 # Parse the JSON string
                 company_agents = json.loads(company_agents)
             if "agents" in company_agents:
-                filtered_agents.extend(company_agents["agents"])
+                filtered_agents_by_company[company_id] = company_agents["agents"]
             else:
                 st.warning(f"No agents found in company data for ID: {company_id}")
+        else:
+            st.warning(f"No agents found for sanitized company ID: {sanitized_id}")
 
-
-    if filtered_agents:
-        display_agents(filtered_agents,company_id)
+    if filtered_agents_by_company:
+        display_agents(filtered_agents_by_company)
     else:
         st.info("No agents match the selected criteria.")
 
