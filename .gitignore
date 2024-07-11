@@ -12,3 +12,6 @@
 /sqlite desc.py
 /unified_company_data.csv
 /~$unified_company_data.csv
+node_modules/
+*.log
+*.env
