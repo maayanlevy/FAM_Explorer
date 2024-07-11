@@ -73,17 +73,19 @@ def navigate_agents():
     industries = st.sidebar.multiselect("Select Industries", options=df_company["company.category.industry"].unique().tolist(), default=[])
     technologies = st.sidebar.multiselect("Select Technologies", options=df_company["company.tech"].str.split(', ').explode().unique().tolist(), default=[])
 
+    # Initialize the filter condition as True
+    filter_condition = pd.Series([True] * len(df_company))
+
+    if company_ids:
+        filter_condition &= df_company["ID"].isin(company_ids)
+    if industries:
+        filter_condition &= df_company["company.category.industry"].isin(industries)
+    if technologies:
+        tech_filter = df_company["company.tech"].str.split(', ').apply(lambda x: any(tech in technologies for tech in x) if isinstance(x, list) else False)
+        filter_condition &= tech_filter
+
     # Filter companies based on selections
-    if not company_ids and not industries and not technologies:
-        st.info("Please select at least one filter to display agents.")
-        return
-
-    filtered_companies = df_company[
-        (df_company["ID"].isin(company_ids) if company_ids else True) &
-        (df_company["company.category.industry"].isin(industries) if industries else True) &
-        (df_company["company.tech"].str.split(', ').explode().isin(technologies) if technologies else True)
-    ]
-
+    filtered_companies = df_company[filter_condition]
     filtered_company_ids = filtered_companies["ID"].unique()
 
     # Collect agents for filtered companies
