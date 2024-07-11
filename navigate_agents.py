@@ -84,7 +84,7 @@ def navigate_agents():
         tech_filter = df_company["company.tech"].str.split(', ').apply(lambda x: any(tech in technologies for tech in x) if isinstance(x, list) else False)
         filter_condition &= tech_filter
 
-    # Filter companies based on selections
+    # Apply the filter condition
     filtered_companies = df_company[filter_condition]
     filtered_company_ids = filtered_companies["ID"].unique()
 
