@@ -20,7 +20,7 @@ def sanitize_id(company_id):
     # Replace periods with commas or any other character that Firebase allows
     return company_id.replace('.', ',')
 
-def display_agents(agents):
+def display_agents(agents,company_id):
     st.subheader("AI Agents")
     col1, col2 = st.columns(2)
     for i, agent in enumerate(agents):
@@ -42,7 +42,7 @@ def display_agents(agents):
             position: relative;
             overflow: hidden;
         ">
-            <h4 style="margin-left: 10px; color: #202124; font-family: 'Google Sans',Roboto,Arial,sans-serif;">Service: {id}</h5
+            <p style="margin-left: 10px; font-family: Roboto,Arial,sans-serif;"><b>Company ID:</b>{company_id}</p>
             <h5 style="margin-left: 10px; color: #202124; font-family: 'Google Sans',Roboto,Arial,sans-serif;">{title}</h5>
             <p style="margin-left: 10px; font-family: Roboto,Arial,sans-serif;">{description}</p>
             <p style="margin-left: 10px; font-family: Roboto,Arial,sans-serif;"><b>Used By:</b> {', '.join(used_by)}</p>
@@ -107,7 +107,7 @@ def navigate_agents():
 
 
     if filtered_agents:
-        display_agents(filtered_agents)
+        display_agents(filtered_agents,company_id)
     else:
         st.info("No agents match the selected criteria.")
 
