@@ -69,15 +69,19 @@ def navigate_agents():
     # Sidebar for filtering options
     st.sidebar.header("Filter Companies")
     
-    company_ids = st.sidebar.multiselect("Select Company IDs", options=df_company["ID"].unique().tolist(), default=df_company["ID"].unique().tolist())
-    industries = st.sidebar.multiselect("Select Industries", options=df_company["company.category.industry"].unique().tolist(), default=df_company["company.category.industry"].unique().tolist())
-    technologies = st.sidebar.multiselect("Select Technologies", options=df_company["company.tech"].str.split(', ').explode().unique().tolist(), default=df_company["company.tech"].str.split(', ').explode().unique().tolist())
+    company_ids = st.sidebar.multiselect("Select Company IDs", options=df_company["ID"].unique().tolist(), default=[])
+    industries = st.sidebar.multiselect("Select Industries", options=df_company["company.category.industry"].unique().tolist(), default=[])
+    technologies = st.sidebar.multiselect("Select Technologies", options=df_company["company.tech"].str.split(', ').explode().unique().tolist(), default=[])
 
     # Filter companies based on selections
+    if not company_ids and not industries and not technologies:
+        st.info("Please select at least one filter to display agents.")
+        return
+
     filtered_companies = df_company[
-        (df_company["ID"].isin(company_ids)) &
-        (df_company["company.category.industry"].isin(industries)) &
-        (df_company["company.tech"].str.split(', ').explode().isin(technologies))
+        (df_company["ID"].isin(company_ids) if company_ids else True) &
+        (df_company["company.category.industry"].isin(industries) if industries else True) &
+        (df_company["company.tech"].str.split(', ').explode().isin(technologies) if technologies else True)
     ]
 
     filtered_company_ids = filtered_companies["ID"].unique()
@@ -89,8 +93,6 @@ def navigate_agents():
         sanitized_id = sanitize_id(company_id)
         if sanitized_id in agents_data:
             filtered_agents.extend(agents_data[sanitized_id].values())
-        else:
-            st.warning(f"No agents found for sanitized company ID: {sanitized_id}")
 
     if filtered_agents:
         display_agents(filtered_agents)
