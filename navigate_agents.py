@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import json
 from firebase_admin import db
-import os
 
 @st.cache_data
 def fetch_company_data():
@@ -16,6 +15,10 @@ def fetch_agents_data():
     ref = db.reference('Agents')
     data = ref.get()
     return data
+
+def sanitize_id(company_id):
+    # Replace periods with commas or any other character that Firebase allows
+    return company_id.replace('.', ',')
 
 def display_agents(agents):
     st.subheader("AI Agents")
@@ -59,6 +62,9 @@ def navigate_agents():
     if not agents_data:
         st.info("No agents data available.")
         return
+
+    # Sanitize the keys in agents_data
+    agents_data = {sanitize_id(key): value for key, value in agents_data.items()}
 
     # Filtering options
     company_ids = st.multiselect("Select Company IDs", options=df_company["ID"].unique().tolist(), default=df_company["ID"].unique().tolist())
