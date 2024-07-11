@@ -42,11 +42,11 @@ def display_agents(agents_by_company):
                 position: relative;
                 overflow: hidden;
             ">
+                <p style="margin-left: 10px; font-family: Roboto,Arial,sans-serif;"><b>Service:</b> {company_id}</p>
                 <h5 style="margin-left: 10px; color: #202124; font-family: 'Google Sans',Roboto,Arial,sans-serif;">{title}</h5>
                 <p style="margin-left: 10px; font-family: Roboto,Arial,sans-serif;">{description}</p>
                 <p style="margin-left: 10px; font-family: Roboto,Arial,sans-serif;"><b>Used By:</b> {', '.join(used_by)}</p>
                 <p style="margin-left: 10px; font-family: Roboto,Arial,sans-serif;"><b>Related APIs:</b> {', '.join(related_apis)}</p>
-                <p style="margin-left: 10px; font-family: Roboto,Arial,sans-serif;"><b>Company ID:</b> {company_id}</p>
             </div>
             """
             # Alternate between columns
