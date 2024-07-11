@@ -28,6 +28,7 @@ def display_agents(agents):
         description = agent.get("AgentDescription", "No description available.")
         used_by = agent.get("UsedBy", [])
         related_apis = agent.get("RelatedAPIs", [])
+        id = agent.get("ID", [])
         
         # Create a card with custom CSS
         card_html = f"""
@@ -41,6 +42,7 @@ def display_agents(agents):
             position: relative;
             overflow: hidden;
         ">
+            <h4 style="margin-left: 10px; color: #202124; font-family: 'Google Sans',Roboto,Arial,sans-serif;">Service: {id}</h5
             <h5 style="margin-left: 10px; color: #202124; font-family: 'Google Sans',Roboto,Arial,sans-serif;">{title}</h5>
             <p style="margin-left: 10px; font-family: Roboto,Arial,sans-serif;">{description}</p>
             <p style="margin-left: 10px; font-family: Roboto,Arial,sans-serif;"><b>Used By:</b> {', '.join(used_by)}</p>
