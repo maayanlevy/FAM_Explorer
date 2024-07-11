@@ -1,6 +1,5 @@
-streamlit==<latest_version>
-pandas==<latest_version>
-firebase-admin==<latest_version>
-python-dotenv==<latest_version>
-requests==<latest_version>
-st-aggrid==<latest_version>
+streamlit
+firebase-admin
+python-dotenv
+requests
+st-aggrid
