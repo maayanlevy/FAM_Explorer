@@ -71,25 +71,23 @@ def navigate_agents():
     industries = st.multiselect("Select Industries", options=df_company["company.category.industry"].unique().tolist(), default=df_company["company.category.industry"].unique().tolist())
     technologies = st.multiselect("Select Technologies", options=df_company["company.tech"].str.split(', ').explode().unique().tolist(), default=df_company["company.tech"].str.split(', ').explode().unique().tolist())
 
+    # Filter companies based on selections
+    filtered_companies = df_company[
+        (df_company["ID"].isin(company_ids)) &
+        (df_company["company.category.industry"].isin(industries)) &
+        (df_company["company.tech"].str.split(', ').explode().isin(technologies))
+    ]
+
+    filtered_company_ids = filtered_companies["ID"].unique()
+
+    # Collect agents for filtered companies
     filtered_agents = []
 
-    for company_id, agents in agents_data.items():
-        if company_ids and company_id not in company_ids:
-            continue
-        
-        company_info = df_company[df_company["ID"] == company_id]
-        if not company_info.empty:
-            industry = company_info["company.category.industry"].values[0]
-            company_technologies = company_info["company.tech"].values[0].split(', ') if not pd.isna(company_info["company.tech"].values[0]) else []
+    for company_id in filtered_company_ids:
+        sanitized_id = sanitize_id(company_id)
+        if sanitized_id in agents_data:
+            filtered_agents.extend(agents_data[sanitized_id].values())
 
-            if industries and industry not in industries:
-                continue
-
-            if technologies and not any(tech in technologies for tech in company_technologies):
-                continue
-            
-            filtered_agents.extend(agents.values())
-    
     if filtered_agents:
         display_agents(filtered_agents)
     else:
