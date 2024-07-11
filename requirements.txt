@@ -2,3 +2,4 @@ streamlit
 pandas
 firebase
 firebase_admin
+st_aggrid
