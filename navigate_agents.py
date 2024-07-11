@@ -66,10 +66,12 @@ def navigate_agents():
     # Sanitize the keys in agents_data
     agents_data = {sanitize_id(key): value for key, value in agents_data.items()}
 
-    # Filtering options
-    company_ids = st.multiselect("Select Company IDs", options=df_company["ID"].unique().tolist(), default=df_company["ID"].unique().tolist())
-    industries = st.multiselect("Select Industries", options=df_company["company.category.industry"].unique().tolist(), default=df_company["company.category.industry"].unique().tolist())
-    technologies = st.multiselect("Select Technologies", options=df_company["company.tech"].str.split(', ').explode().unique().tolist(), default=df_company["company.tech"].str.split(', ').explode().unique().tolist())
+    # Sidebar for filtering options
+    st.sidebar.header("Filter Companies")
+    
+    company_ids = st.sidebar.multiselect("Select Company IDs", options=df_company["ID"].unique().tolist(), default=df_company["ID"].unique().tolist())
+    industries = st.sidebar.multiselect("Select Industries", options=df_company["company.category.industry"].unique().tolist(), default=df_company["company.category.industry"].unique().tolist())
+    technologies = st.sidebar.multiselect("Select Technologies", options=df_company["company.tech"].str.split(', ').explode().unique().tolist(), default=df_company["company.tech"].str.split(', ').explode().unique().tolist())
 
     # Filter companies based on selections
     filtered_companies = df_company[
@@ -87,8 +89,14 @@ def navigate_agents():
         sanitized_id = sanitize_id(company_id)
         if sanitized_id in agents_data:
             filtered_agents.extend(agents_data[sanitized_id].values())
+        else:
+            st.warning(f"No agents found for sanitized company ID: {sanitized_id}")
 
     if filtered_agents:
         display_agents(filtered_agents)
     else:
         st.info("No agents match the selected criteria.")
+
+# Ensure the function is called when running the script directly
+if __name__ == "__main__":
+    navigate_agents()
