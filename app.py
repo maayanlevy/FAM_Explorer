@@ -7,6 +7,7 @@ import json
 import os
 from dotenv import load_dotenv
 import streamlit.components.v1 as components
+import requests
 
 # Load environment variables from .env file
 load_dotenv()
@@ -189,7 +190,7 @@ def get_ai_agent_description(company_data, df_zapier):
         "model": "claude-3-5-sonnet-20240620",
         "max_tokens": 1000
     }
-    
+      
     response = requests.post(api_url, headers=headers, json=data)
     
     if response.status_code == 200:
