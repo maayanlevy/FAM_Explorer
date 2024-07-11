@@ -94,7 +94,16 @@ def navigate_agents():
     for company_id in filtered_company_ids:
         sanitized_id = sanitize_id(company_id)
         if sanitized_id in agents_data:
-            filtered_agents.extend(agents_data[sanitized_id].values())
+            company_agents = agents_data[sanitized_id]
+            if isinstance(company_agents, str):
+                # Parse the JSON string
+                company_agents = json.loads(company_agents)
+            if "agents" in company_agents:
+                filtered_agents.extend(company_agents["agents"])
+            else:
+                st.warning(f"No agents found in company data for ID: {company_id}")
+        else:
+            st.warning(f"No agents found for sanitized company ID: {sanitized_id}")
 
     if filtered_agents:
         display_agents(filtered_agents)
