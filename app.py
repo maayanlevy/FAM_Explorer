@@ -306,6 +306,9 @@ def home():
     if locations:
         filter_condition &= df_company["company.geo.country"].isin(locations)
 
+    # Apply the filter condition
+    df_filtered = df_filtered[filter_condition]
+
     # Apply sorting
     df_sorted = df_filtered.sort_values(by=sort_column, ascending=sort_ascending)
 
