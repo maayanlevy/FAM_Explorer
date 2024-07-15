@@ -283,6 +283,8 @@ def home():
         options=all_columns,
         default=default_columns
     )
+    # Locations filter
+    locations = st.sidebar.multiselect("Select Locations", options=df_company["company.geo.country"].unique().tolist(), default=[])
 
     # Sorting
     sort_column = st.sidebar.selectbox("Sort by", options=selected_columns, index=selected_columns.index('company.metrics.employees'))
@@ -297,6 +299,12 @@ def home():
     else:
         df_filtered = df_company
 
+    # Initialize the filter condition as True
+    filter_condition = pd.Series([True] * len(df_company))
+    
+    if locations:
+    filter_condition &= df_company["company.geo.country"].isin(locations)
+    
     # Apply sorting
     df_sorted = df_filtered.sort_values(by=sort_column, ascending=sort_ascending)
 
