@@ -304,7 +304,7 @@ def home():
     filter_condition = pd.Series([True] * len(df_company))
     
     if locations:
-    filter_condition &= df_company["company.geo.country"].isin(locations)
+        filter_condition &= df_company["company.geo.country"].isin(locations)
 
     # Apply sorting
     df_sorted = df_filtered.sort_values(by=sort_column, ascending=sort_ascending)
