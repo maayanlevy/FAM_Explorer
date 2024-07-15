@@ -284,7 +284,6 @@ def home():
         default=default_columns
     )
     # Locations filter
-    st.sidebar.header("Filter by location")
     locations = st.sidebar.multiselect("Select Locations", options=df_company["company.geo.country"].unique().tolist(), default=[])
 
     # Sorting
