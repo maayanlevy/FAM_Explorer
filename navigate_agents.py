@@ -74,6 +74,8 @@ def navigate_agents():
     company_ids = st.sidebar.multiselect("Select Company IDs", options=df_company["ID"].unique().tolist(), default=[])
     industries = st.sidebar.multiselect("Select Industries", options=df_company["company.category.industry"].unique().tolist(), default=[])
     technologies = st.sidebar.multiselect("Select Technologies", options=df_company["company.tech"].str.split(', ').explode().unique().tolist(), default=[])
+    locations = st.sidebar.multiselect("Select Locations", options=df_company["company.geo.country"].unique().tolist(), default=[])
+
 
     # Initialize the filter condition as True
     filter_condition = pd.Series([True] * len(df_company))
@@ -85,6 +87,9 @@ def navigate_agents():
     if technologies:
         tech_filter = df_company["company.tech"].str.split(', ').apply(lambda x: any(tech in technologies for tech in x) if isinstance(x, list) else False)
         filter_condition &= tech_filter
+    if locations:
+        filter_condition &= df_company["company.geo.country"].isin(locations)
+
 
     # Apply the filter condition
     filtered_companies = df_company[filter_condition]
