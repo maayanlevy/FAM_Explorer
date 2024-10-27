@@ -35,8 +35,6 @@
     "drupal": 1,
     "django": 1,
     "android": 1,
-    "mysql": 1,
-    "postgresql": 1,
     "nginx": 1,
     "ruby_on_rails": 1
   }
