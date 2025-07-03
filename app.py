@@ -174,7 +174,7 @@ def get_ai_agent_description(company_data, df_zapier):
     APIs: {', '.join(df_zapier[df_zapier['ID'] == company_data['ID']]['API Name'].tolist())}
     
     Based on the information above, describe AI agents that can replicate what this company offers through its APIs. Focus on the key functionalities and how an AI agent could automate or enhance these processes.
-    Output in Json of agents, with each agent represented as json with the following keys: "Title": "", "AgentDescription": "", "UsedBy": [], "RelatedAPIs": []
+    Output in JSON of agents, with each agent represented as json with the following keys: "Title": "", "AgentDescription": "", "UsedBy": [], "RelatedAPIs": []
     For example an agent can contain: 
       "Title": "ChatGPT",
       "AgentDescription": "ChatGPT is a conversational AI model developed by OpenAI, based on the GPT-4 architecture. It can understand and generate human-like text based on the input it receives.",
