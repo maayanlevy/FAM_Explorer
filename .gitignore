@@ -14,9 +14,5 @@
 /~$unified_company_data.csv
 node_modules/
 *.log
-<<<<<<< HEAD
-*.env
-=======
 *.env
 integrations-e4446-firebase-adminsdk-exha2-e486e9d056.json
->>>>>>> b427f9c (Remove Firebase credentials file and add to .gitignore)
